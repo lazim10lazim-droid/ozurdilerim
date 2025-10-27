@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Bender’a Mesaj</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
+    body {
+      background: radial-gradient(circle at center, #200028, #000);
+      color: #ffd6d6;
+      font-family: 'Pacifico', cursive;
+      text-align: center;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: background 2s ease;
+    }
+
+    h1, h2, h3 {
+      transition: opacity 1s ease;
+    }
+
+    button, .choice {
+      background-color: #ff5f5f;
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      margin: 10px;
+      font-size: 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'Pacifico', cursive;
+      transition: 0.3s;
+    }
+
+    button:hover, .choice:hover {
+      background-color: #ff8080;
+      transform: scale(1.05);
+    }
+
+    #container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #choices {
+      display: none;
+      flex-direction: row;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    #message {
+      margin-top: 20px;
+      font-size: 22px;
+      color: #ffbdbd;
+    }
+
+    .heart, .confetti {
+      position: absolute;
+      pointer-events: none;
+      animation: fall 3s linear forwards;
+    }
+
+    .heart {
+      color: #ff5f8b;
+      font-size: 20px;
+    }
+
+    .confetti {
+      width: 8px;
+      height: 8px;
+      background-color: hsl(var(--hue), 100%, 70%);
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(800px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    audio {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <h1 id="text">...</h1>
+    <button id="mainButton" style="display: none;">Tıkla</button>
+    <h2 id="thanks" style="display: none;">Teşekkürler 💖</h2>
+
+    <div id="question" style="display: none;">
+      <h3>Merti dinler misin?</h3>
+      <div id="choices">
+        <div class="choice" id="yes">Evet</div>
+        <div class="choice" id="no">Hayır</div>
+      </div>
+    </div>
+
+    <div id="message"></div>
+  </div>
+
+  <audio id="music" loop>
+    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_90e0e47f5a.mp3?filename=romantic-piano-ambient-112190.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const textEl = document.getElementById('text');
+    const button = document.getElementById('mainButton');
+    const thanks = document.getElementById('thanks');
+    const question = document.getElementById('question');
+    const choices = document.getElementById('choices');
+    const yes = document.getElementById('yes');
+    const no = document.getElementById('no');
+    const message = document.getElementById('message');
+    const music = document.getElementById('music');
+
+    let step = 0;
+
+    function typeText(text, callback) {
+      let i = 0;
+      textEl.textContent = "";
+      const interval = setInterval(() => {
+        textEl.textContent += text[i];
+        i++;
+        if (i >= text.length) {
+          clearInterval(interval);
+          if (callback) setTimeout(callback, 1000);
+        }
+      }, 100);
+    }
+
+    // Başlangıç
+    typeText("Bender merhaba", () => {
+      typeText("Lütfen bu butona tıklar mısınız?", () => {
+        button.style.display = "inline-block";
+      });
+    });
+
+    button.addEventListener("click", () => {
+      button.style.display = "none";
+      textEl.style.display = "none";
+      thanks.style.display = "block";
+      music.play();
+
+      setTimeout(() => {
+        question.style.display = "block";
+        choices.style.display = "flex";
+      }, 1500);
+    });
+
+    yes.addEventListener("click", () => {
+      message.textContent = "ben seni üzmek istemedim. ve düşündüğün gibi değil. yarbandı mı bana bunu yakıştırı mısın  💔";
+      document.body.style.background = "linear-gradient(135deg, #ffdee9, #b5fffc)"; // Sevinçli arka plan
+      confettiPatlat();
+      heartsPatlat();
+    });
+
+    no.addEventListener("click", () => {
+      message.textContent = "Evete tıklaman gerekiyordu 😔";
+    });
+
+    // Konfeti efekti
+    function confettiPatlat() {
+      for (let i = 0; i < 80; i++) {
+        const conf = document.createElement("div");
+        conf.className = "confetti";
+        conf.style.left = Math.random() * window.innerWidth + "px";
+        conf.style.top = "-10px";
+        conf.style.setProperty("--hue", Math.random() * 360);
+        document.body.appendChild(conf);
+        setTimeout(() => conf.remove(), 3000);
+      }
+    }
+
+    // Kalp efekti
+    function heartsPatlat() {
+      for (let i = 0; i < 30; i++) {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.textContent = "❤️";
+        heart.style.left = Math.random() * window.innerWidth + "px";
+        heart.style.top = Math.random() * window.innerHeight + "px";
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 3000);
+      }
+    }
+  </script>
+</body>
+</html>
